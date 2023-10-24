@@ -1,0 +1,46 @@
+/* CSS for the writing animation component */
+.writing-animation {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: red;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .typing-text {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    white-space: pre;
+  }
+  
+  /* CSS animation for typing effect */
+  @keyframes typing {
+    from {
+      width: -100%;
+    }
+    to {
+      width: 100%;
+    }
+  }
+  
+  .typing-text::after {
+    content: '|';
+    display: inline-block;
+    width: 0;
+    animation: typing 0.5s steps(1, 0);
+  }
+  
+  .typing-text::before {
+    content: '';
+    display: inline-block;
+    width: 0;
+  }
+  
