@@ -1,29 +1,14 @@
 const express = require('express')
 const morgan = require('morgan')
-const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const fs = require('fs');
-const { spawn } = require('child_process');
+const ip = require('./ip')
 
-const pythonProcess = spawn('python3', ['ip.py']);
-
-pythonProcess.stdout.on('data', (data) => {
-  console.log(`Python script output: ${data}`);
-});
-
-pythonProcess.stderr.on('data', (data) => {
-  console.error(`Python script error: ${data}`);
-});
-
-pythonProcess.on('close', (code) => {
-  console.log(`Python script exited with code ${code}`);
-});
+ip.ipInvoke() // Main function for IP Invoke
 
 const app = express();
-
 const db = require('./db')
-
 const PORT = process.env.PORT || 3001
 
 app.use(morgan('dev'))
@@ -32,6 +17,27 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }))
 
 app.get('/', (req, res) => res.send('Hello World!'))
+
+app.post('/api/downloadFile', (req, res) => {
+  const { fileName } = req.body;
+
+  if (!fileName) {
+    return res.status(400).send('File name is missing in the request body');
+  }
+  const filePath = path.join(__dirname, 'files', `${fileName}.csv`);
+
+  try {
+    if (fs.existsSync(filePath)) {
+      res.download(filePath); 
+    } else {
+      res.status(404).send('File not found');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('Server error');
+  }
+});
+
 
 app.post('/auth/login', async (req, res) => {
   const { username, password } = req.body;
