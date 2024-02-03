@@ -92,9 +92,9 @@ const checkUpdateOnline = (device, time) => {
         const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
         const formattedTimeDiff = `${weeks} week(s) ${days} day(s) ${hours} hour(s) ${minutes} minute(s)`;
         const monthFileName = path.join('files', currentDate.toLocaleString('default', { month: 'long' })) + '.csv';
-        // const shouldWriteCsv = weeks > 0 || days > 0 || hours > 0 || minutes > 10;
+        const shouldWriteCsv = weeks > 0 || days > 0 || hours > 0 || minutes > 10;
         createMonthlyCsv(monthFileName);
-        writeCsv(monthFileName, [countCsvRows(monthFileName), d.device_ip, d.time, currentDate.toLocaleString(), formattedTimeDiff]);
+        if(shouldWriteCsv==true){writeCsv(monthFileName, [countCsvRows(monthFileName), d.device_ip, d.time, currentDate.toLocaleString(), formattedTimeDiff])};
       }
       d.color = "green";
       d.time = '';
