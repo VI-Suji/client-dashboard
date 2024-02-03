@@ -8,7 +8,6 @@ const ip = require('./ip')
 ip.ipInvoke() // Main function for IP Invoke
 
 const app = express();
-const db = require('./db')
 const PORT = process.env.PORT || 3001
 
 app.use(morgan('dev'))
@@ -38,30 +37,10 @@ app.post('/api/downloadFile', (req, res) => {
   }
 });
 
-
-app.post('/auth/login', async (req, res) => {
-  const { username, password } = req.body;
-  const users = await db.select().from('users').where('username','=',username).where('password','=',password)
-  res.json(users)
-})
-
 app.get('/api/data', (req, res) => {
   const filePath = path.join(__dirname, 'data.json');
   const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
   res.json(data);
 });
-
-
-app.post('/auth/all', async (req, res) => {
-  const users = await db.select().from('users')
-  res.json(users)
-})
-
-app.post('/auth/register', async (req, res) => {
-  const { username, password } = req.body;
-
-  const user = await db('users').insert({ username: username, password : password }).returning('*')
-  res.json(user)
-})
 
 app.listen(PORT, () => console.log(`Server up at http://localhost:${PORT}`))
