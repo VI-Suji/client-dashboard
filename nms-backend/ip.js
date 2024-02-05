@@ -1,19 +1,33 @@
-const fs = require('fs');
-const { exec } = require('child_process');
-const path = require('path');
+const fs = require("fs");
+const { exec } = require("child_process");
+const path = require("path");
 
 const devices = [
-    "192.168.1.1", "192.168.1.2", "192.168.1.3", "192.168.1.4", "192.168.1.5",
-    "192.168.1.6", "192.168.1.7", "192.168.1.8", "192.168.1.9", "192.168.1.10",
-    "192.168.1.11", "192.168.1.12", "192.168.1.13", "192.168.1.14", "192.168.1.15",
-    "192.168.1.16", "192.168.1.17", "192.168.1.18"
+  "192.168.1.247",
+  "192.168.1.248",
+  "192.168.1.249",
+  "192.168.1.250",
+  "192.168.10.8",
+  "192.168.10.9",
+  "192.168.10.10",
+  "192.168.10.11",
+  "192.168.10.12",
+  "192.168.10.13",
+  "192.168.10.14",
+  "192.168.10.15",
+  "192.168.10.64",
+  "192.168.10.54",
+  "192.168.1.201",
+  "192.168.1.202",
+  "192.168.1.203",
+  "192.168.1.204",
 ];
 
 const filePath = "data.json";
 
 const loadData = (filePath) => {
   try {
-    const jsonData = fs.readFileSync(filePath, 'utf8');
+    const jsonData = fs.readFileSync(filePath, "utf8");
     return JSON.parse(jsonData);
   } catch (err) {
     return [];
@@ -25,18 +39,21 @@ const saveData = (filePath, data) => {
 };
 
 const countCsvRows = (fileName) => {
-  const fileData = fs.readFileSync(fileName, 'utf8');
-  const rowCount = fileData.trim().split('\n').length;
+  const fileData = fs.readFileSync(fileName, "utf8");
+  const rowCount = fileData.trim().split("\n").length;
   return rowCount;
 };
 
 const writeCsv = (fileName, data) => {
-  fs.appendFileSync(fileName, data.join(',') + '\n');
+  fs.appendFileSync(fileName, data.join(",") + "\n");
 };
 
 const createMonthlyCsv = (fileName) => {
   if (!fs.existsSync(fileName)) {
-    fs.writeFileSync(fileName, 'Sl No,Device IP,Downtime Started,Downtime Ended,Duration\n');
+    fs.writeFileSync(
+      fileName,
+      "Sl No,Device IP,Downtime Started,Downtime Ended,Duration\n"
+    );
   }
 };
 
@@ -51,13 +68,13 @@ const checkDeviceStatus = (device) => {
   }
 
   if (!found) {
-    data.push({ device_ip: device, color: 'green', time: '', state: 'Online' });
+    data.push({ device_ip: device, color: "green", time: "", state: "Online" });
   }
   exec(`ping -c 1 ${device}`, (error, stdout) => {
     const now = new Date().toLocaleString();
     const timeNow = new Date().toLocaleString();
 
-    if (!stdout.includes('100.0% packet loss')) {
+    if (!stdout.includes("100.0% packet loss")) {
       checkUpdateOnline(device, new Date());
     } else {
       checkUpdateOffline(device, timeNow, data);
@@ -69,12 +86,12 @@ const checkDeviceStatus = (device) => {
 
 const checkUpdateOffline = (device, timeNow, data) => {
   for (const d of data) {
-    if (d.device_ip === device && d.color === 'red') {
+    if (d.device_ip === device && d.color === "red") {
       continue;
     } else if (d.device_ip === device) {
       d.color = "red";
       d.time = timeNow;
-      d.state = 'Offline';
+      d.state = "Offline";
     }
   }
   return data;
@@ -87,18 +104,35 @@ const checkUpdateOnline = (device, time) => {
         const currentDate = new Date();
         const timeDiff = currentDate - new Date(d.time);
         const weeks = Math.floor(timeDiff / (1000 * 60 * 60 * 24 * 7));
-        const days = Math.floor((timeDiff % (1000 * 60 * 60 * 24 * 7)) / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const days = Math.floor(
+          (timeDiff % (1000 * 60 * 60 * 24 * 7)) / (1000 * 60 * 60 * 24)
+        );
+        const hours = Math.floor(
+          (timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
         const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
         const formattedTimeDiff = `${weeks} week(s) ${days} day(s) ${hours} hour(s) ${minutes} minute(s)`;
-        const monthFileName = path.join('files', currentDate.toLocaleString('default', { month: 'long' })) + '.csv';
-        const shouldWriteCsv = weeks > 0 || days > 0 || hours > 0 || minutes > 10;
+        const monthFileName =
+          path.join(
+            "files",
+            currentDate.toLocaleString("default", { month: "long" })
+          ) + ".csv";
+        const shouldWriteCsv =
+          weeks > 0 || days > 0 || hours > 0 || minutes > 10;
         createMonthlyCsv(monthFileName);
-        if(shouldWriteCsv==true){writeCsv(monthFileName, [countCsvRows(monthFileName), d.device_ip, d.time, currentDate.toLocaleString(), formattedTimeDiff])};
+        if (shouldWriteCsv == true) {
+          writeCsv(monthFileName, [
+            countCsvRows(monthFileName),
+            d.device_ip,
+            d.time,
+            currentDate.toLocaleString(),
+            formattedTimeDiff,
+          ]);
+        }
       }
       d.color = "green";
-      d.time = '';
-      d.state = 'Online';
+      d.time = "";
+      d.state = "Online";
     }
   }
   return data;
@@ -106,15 +140,15 @@ const checkUpdateOnline = (device, time) => {
 
 let data;
 
-function ip_invoke(){
-    setInterval(() => {
+function ip_invoke() {
+  setInterval(() => {
     data = loadData(filePath);
     devices.forEach((device) => {
-        checkDeviceStatus(device);
+      checkDeviceStatus(device);
     });
-    }, 5000);
+  }, 5000);
 }
 
 module.exports = {
-    ipInvoke : ip_invoke
-}
+  ipInvoke: ip_invoke,
+};
