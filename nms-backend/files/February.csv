@@ -1,3 +1,5 @@
-Sl No,Device IP,Downtime Started,Downtime Ended,Duration
-1,192.168.1.8,2/3/2024, 12:43:17 PM,2/3/2024, 12:56:20 PM,0 week(s) 0 day(s) 0 hour(s) 13 minute(s)
-2,192.168.1.1,12/22/2023, 1:40:27 PM,2/3/2024, 12:57:06 PM,6 week(s) 0 day(s) 23 hour(s) 16 minute(s)
+Sl No,Device Name,Downtime Started,Downtime Ended,Duration,Location,Reason
+1,Vijayamangalam CCTV,2/4/2024, 10:40:17 PM,2/8/2024, 8:06:10 PM,0 week(s) 3 day(s) 21 hour(s) 25 minute(s),Vijayamangalam Highway,Power Outage
+2,Kumarapalayam CCTV,12/7/2023, 5:40:13 AM,2/8/2024, 8:06:10 PM,9 week(s) 0 day(s) 14 hour(s) 25 minute(s),Kumarapalayam,Power Outage
+3,Vasavi College VMS,12/5/2023, 11:52:18 PM,2/8/2024, 8:09:59 PM,9 week(s) 1 day(s) 20 hour(s) 17 minute(s),Vasavi College,Power Outage
+4,Chengapally VMS,12/5/2023, 11:52:18 PM,2/8/2024, 8:09:59 PM,9 week(s) 1 day(s) 20 hour(s) 17 minute(s),Chengapally,Power Outage

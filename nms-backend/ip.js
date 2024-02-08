@@ -52,7 +52,7 @@ const createMonthlyCsv = (fileName) => {
   if (!fs.existsSync(fileName)) {
     fs.writeFileSync(
       fileName,
-      "Sl No,Device IP,Downtime Started,Downtime Ended,Duration\n"
+      "Sl No,Device Name,Downtime Started,Downtime Ended,Duration, Location, Reason\n"
     );
   }
 };
@@ -73,6 +73,7 @@ const checkDeviceStatus = (device) => {
   exec(`ping -c 1 ${device}`, (error, stdout) => {
     const now = new Date().toLocaleString();
     const timeNow = new Date().toLocaleString();
+    // console.log(stdout);
 
     if (!stdout.includes("100.0% packet loss")) {
       checkUpdateOnline(device, new Date());
@@ -123,10 +124,12 @@ const checkUpdateOnline = (device, time) => {
         if (shouldWriteCsv == true) {
           writeCsv(monthFileName, [
             countCsvRows(monthFileName),
-            d.device_ip,
+            d.title,
             d.time,
             currentDate.toLocaleString(),
             formattedTimeDiff,
+            d.description,
+            'Power Outage'
           ]);
         }
       }
@@ -144,6 +147,7 @@ function ip_invoke() {
   setInterval(() => {
     data = loadData(filePath);
     devices.forEach((device) => {
+      // console.log("device name is : ",device)
       checkDeviceStatus(device);
     });
   }, 5000);

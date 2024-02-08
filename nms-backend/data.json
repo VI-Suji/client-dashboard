@@ -29,7 +29,7 @@
     {
         "device_ip": "192.168.1.250",
         "title": "Kumarapalayam CCTV",
-        "description": "Kumarapalayam CCTV",
+        "description": "Kumarapalayam",
         "imageUrl": "/images/cctv.png",
         "color": "red",
         "state": "Offline",
@@ -38,7 +38,7 @@
     {
         "device_ip": "192.168.10.8",
         "title": "Chengapalli Transmitter",
-        "description": "Chengapalli TX",
+        "description": "Chengapalli",
         "imageUrl": "/images/tx.png",
         "color": "red",
         "state": "Offline",
@@ -47,7 +47,7 @@
     {
         "device_ip": "192.168.10.9",
         "title": "KTL RX",
-        "description": "KTL RX",
+        "description": "KTL",
         "imageUrl": "/images/rx.png",
         "color": "red",
         "state": "Offline",
@@ -56,7 +56,7 @@
     {
         "device_ip": "192.168.10.10",
         "title": "KTL Transmitter",
-        "description": "KTL TX",
+        "description": "KTL",
         "imageUrl": "/images/tx.png",
         "color": "red",
         "state": "Offline",
@@ -65,7 +65,7 @@
     {
         "device_ip": "192.168.10.11",
         "title": "Punjabi Dhabha Reciever",
-        "description": "KTL RX",
+        "description": "Punjabi Dhabha",
         "imageUrl": "/images/rx.png",
         "color": "red",
         "state": "Offline",
@@ -74,7 +74,7 @@
     {
         "device_ip": "192.168.10.12",
         "title": "Punjabi Dhaba Transmitter",
-        "description": "Punjabi Dhabha TX",
+        "description": "Punjabi Dhabha",
         "imageUrl": "/images/tx.png",
         "color": "red",
         "state": "Offline",
@@ -83,7 +83,7 @@
     {
         "device_ip": "192.168.10.13",
         "title": "Thiruvachi Reciever ",
-        "description": "Thiruvachi RX",
+        "description": "Thiruvachi",
         "imageUrl": "/images/rx.png",
         "color": "red",
         "state": "Offline",
@@ -92,7 +92,7 @@
     {
         "device_ip": "192.168.10.14",
         "title": "Thiruvachi TX",
-        "description": "Thiruvachi TX",
+        "description": "Thiruvachi",
         "imageUrl": "/images/tx.png",
         "color": "red",
         "state": "Offline",
@@ -101,7 +101,7 @@
     {
         "device_ip": "192.168.10.15",
         "title": "Opp: Water Tank Receiver",
-        "description": "Opp: Water Tank Receiver",
+        "description": "Opp: Water Tank",
         "imageUrl": "/images/rx.png",
         "color": "red",
         "state": "Offline",
@@ -128,7 +128,7 @@
     {
         "device_ip": "192.168.1.201",
         "title": "Chengapally VMS",
-        "description": "Chengapally VMS",
+        "description": "Chengapally",
         "imageUrl": "/images/vms.png",
         "color": "red",
         "state": "Offline",
@@ -137,7 +137,7 @@
     {
         "device_ip": "192.168.1.202",
         "title": "Thiruvachi VMS",
-        "description": "Thiruvachi VMS",
+        "description": "Thiruvachi",
         "imageUrl": "/images/vms.png",
         "color": "red",
         "state": "Offline",
@@ -146,7 +146,7 @@
     {
         "device_ip": "192.168.1.203",
         "title": "Thiruvachi VMS",
-        "description": "Thiruvachi VMS",
+        "description": "Thiruvachi",
         "imageUrl": "/images/vms.png",
         "color": "red",
         "state": "Offline",
@@ -155,7 +155,7 @@
     {
         "device_ip": "192.168.1.204",
         "title": "Vasavi College VMS",
-        "description": "Vasavi College VMS",
+        "description": "Vasavi College",
         "imageUrl": "/images/vms.png",
         "color": "red",
         "state": "Offline",
