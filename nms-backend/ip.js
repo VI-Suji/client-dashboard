@@ -52,7 +52,7 @@ const createMonthlyCsv = (fileName) => {
   if (!fs.existsSync(fileName)) {
     fs.writeFileSync(
       fileName,
-      "Sl No,Device Name,Downtime Started Date,Downtime Started Time,Downtime Ended Date,Downtime Ended Time,Duration, Location, Reason\n"
+      "Sl No,Device Name,Downtime Started,Downtime Ended,Duration,Location,Reason\n"
     );
   }
 };
@@ -126,7 +126,7 @@ const checkUpdateOnline = (device, time) => {
             countCsvRows(monthFileName),
             d.title,
             d.time,
-            currentDate,
+            currentDate.toLocaleString(),
             formattedTimeDiff,
             d.description,
             "Power Outage",

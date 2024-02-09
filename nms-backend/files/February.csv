@@ -1,4 +1,4 @@
-Sl No,Device Name,Downtime Started Date,Downtime Started Time,Downtime Ended Date,Downtime Ended Time,Duration, Location, Reason
+Sl No,Device Name,Downtime Started,Downtime Ended,Duration,Location,Reason
 1,Vijayamangalam CCTV,4/2/2024, 10:38:42 pm,9/2/2024, 9:17:14 am,0 week(s) 4 day(s) 10 hour(s) 38 minute(s),Vijayamangalam Highway,Power Outage
 2,Kumarapalayam CCTV,7/12/2023, 5:40:13 AM,8/2/2024, 8:06:10 PM,9 week(s) 0 day(s) 14 hour(s) 25 minute(s),Kumarapalayam,Power Outage
 3,Vasavi College VMS,5/12/2023, 11:52:18 PM,8/2/2024, 8:09:59 PM,9 week(s) 1 day(s) 20 hour(s) 17 minute(s),Vasavi College,Power Outage

@@ -4,161 +4,161 @@
         "title": "Vijayamangalam CCTV",
         "description": "Vijayamangalam Highway",
         "imageUrl": "/images/cctv.png",
-        "color": "red",
-        "state": "Offline",
-        "time": "2/4/2024, 10:40:17 PM"
+        "color": "green",
+        "state": "Online",
+        "time": ""
     },
     {
         "device_ip": "192.168.1.248",
         "title": "Punjabi Dhabha CCTV",
         "description": "Opp: Punjabi Dhabha",
         "imageUrl": "/images/cctv.png",
-        "color": "red",
-        "state": "Offline",
-        "time": "2/4/2024, 10:38:42 PM"
+        "color": "green",
+        "state": "Online",
+        "time": ""
     },
     {
         "device_ip": "192.168.1.249",
         "title": "Laxmi Nagar CCTV",
         "description": "Laxmi Nagar",
         "imageUrl": "/images/cctv.png",
-        "color": "red",
-        "state": "Offline",
-        "time": "2/5/2024, 10:56:57 PM"
+        "color": "green",
+        "state": "Online",
+        "time": ""
     },
     {
         "device_ip": "192.168.1.250",
         "title": "Kumarapalayam CCTV",
         "description": "Kumarapalayam",
         "imageUrl": "/images/cctv.png",
-        "color": "red",
-        "state": "Offline",
-        "time": "12/7/2023, 5:40:13 AM"
+        "color": "green",
+        "state": "Online",
+        "time": ""
     },
     {
         "device_ip": "192.168.10.8",
         "title": "Chengapalli Transmitter",
         "description": "Chengapalli",
         "imageUrl": "/images/tx.png",
-        "color": "red",
-        "state": "Offline",
-        "time": "2/4/2024, 10:51:42 PM"
+        "color": "green",
+        "state": "Online",
+        "time": ""
     },
     {
         "device_ip": "192.168.10.9",
         "title": "KTL RX",
         "description": "KTL",
         "imageUrl": "/images/rx.png",
-        "color": "red",
-        "state": "Offline",
-        "time": "12/6/2023, 10:19:07 PM"
+        "color": "green",
+        "state": "Online",
+        "time": ""
     },
     {
         "device_ip": "192.168.10.10",
         "title": "KTL Transmitter",
         "description": "KTL",
         "imageUrl": "/images/tx.png",
-        "color": "red",
-        "state": "Offline",
-        "time": "2/5/2024, 10:56:57 PM"
+        "color": "green",
+        "state": "Online",
+        "time": ""
     },
     {
         "device_ip": "192.168.10.11",
         "title": "Punjabi Dhabha Reciever",
         "description": "Punjabi Dhabha",
         "imageUrl": "/images/rx.png",
-        "color": "red",
-        "state": "Offline",
-        "time": "2/4/2024, 10:39:27 PM"
+        "color": "green",
+        "state": "Online",
+        "time": ""
     },
     {
         "device_ip": "192.168.10.12",
         "title": "Punjabi Dhaba Transmitter",
         "description": "Punjabi Dhabha",
         "imageUrl": "/images/tx.png",
-        "color": "red",
-        "state": "Offline",
-        "time": "12/6/2023, 5:34:40 PM"
+        "color": "green",
+        "state": "Online",
+        "time": ""
     },
     {
         "device_ip": "192.168.10.13",
         "title": "Thiruvachi Reciever ",
         "description": "Thiruvachi",
         "imageUrl": "/images/rx.png",
-        "color": "red",
-        "state": "Offline",
-        "time": "2/5/2024, 10:56:57 PM"
+        "color": "green",
+        "state": "Online",
+        "time": ""
     },
     {
         "device_ip": "192.168.10.14",
         "title": "Thiruvachi TX",
         "description": "Thiruvachi",
         "imageUrl": "/images/tx.png",
-        "color": "red",
-        "state": "Offline",
-        "time": "2/5/2024, 10:56:57 PM"
+        "color": "green",
+        "state": "Online",
+        "time": ""
     },
     {
         "device_ip": "192.168.10.15",
         "title": "Opp: Water Tank Receiver",
         "description": "Opp: Water Tank",
         "imageUrl": "/images/rx.png",
-        "color": "red",
-        "state": "Offline",
-        "time": "2/4/2024, 10:38:42 PM"
+        "color": "green",
+        "state": "Online",
+        "time": ""
     },
     {
         "device_ip": "192.168.10.64",
         "title": "Dual VMS Receiver",
         "description": "Dual VMS RX",
         "imageUrl": "/images/rx.png",
-        "color": "red",
-        "state": "Offline",
-        "time": "2/5/2024, 10:56:57 PM"
+        "color": "green",
+        "state": "Online",
+        "time": ""
     },
     {
         "device_ip": "192.168.10.54",
         "title": "Dual VMS Transmitter",
         "description": "Dual VMS TX",
         "imageUrl": "/images/tx.png",
-        "color": "red",
-        "state": "Offline",
-        "time": "2/4/2024, 10:39:27 PM"
+        "color": "green",
+        "state": "Online",
+        "time": ""
     },
     {
         "device_ip": "192.168.1.201",
         "title": "Chengapally VMS",
         "description": "Chengapally",
         "imageUrl": "/images/vms.png",
-        "color": "red",
-        "state": "Offline",
-        "time": "12/5/2023, 11:52:18 PM"
+        "color": "green",
+        "state": "Online",
+        "time": ""
     },
     {
         "device_ip": "192.168.1.202",
         "title": "Thiruvachi VMS",
         "description": "Thiruvachi",
         "imageUrl": "/images/vms.png",
-        "color": "red",
-        "state": "Offline",
-        "time": "12/7/2023, 6:13:35 AM"
+        "color": "green",
+        "state": "Online",
+        "time": ""
     },
     {
         "device_ip": "192.168.1.203",
         "title": "Thiruvachi VMS",
         "description": "Thiruvachi",
         "imageUrl": "/images/vms.png",
-        "color": "red",
-        "state": "Offline",
-        "time": "12/5/2023, 11:52:18 PM"
+        "color": "green",
+        "state": "Online",
+        "time": ""
     },
     {
         "device_ip": "192.168.1.204",
         "title": "Vasavi College VMS",
         "description": "Vasavi College",
         "imageUrl": "/images/vms.png",
-        "color": "red",
-        "state": "Offline",
-        "time": "12/5/2023, 11:52:18 PM"
+        "color": "green",
+        "state": "Online",
+        "time": ""
     }
 ]
