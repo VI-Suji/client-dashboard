@@ -154,7 +154,7 @@ function ip_invoke() {
       // console.log("device name is : ",device)
       checkDeviceStatus(device);
     });
-  }, 5000);
+  }, 10000);
 }
 
 module.exports = {
