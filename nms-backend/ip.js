@@ -125,12 +125,8 @@ const checkUpdateOnline = (device, time) => {
           writeCsv(monthFileName, [
             countCsvRows(monthFileName),
             d.title,
-            new Date(d.time).toLocaleString("en-IN", {
-              timeZone: "Asia/Kolkata",
-            }),
-            currentDate.toLocaleString("en-IN", {
-              timeZone: "Asia/Kolkata",
-            }),
+            d.time,
+            currentDate,
             formattedTimeDiff,
             d.description,
             "Power Outage",
