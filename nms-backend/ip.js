@@ -52,7 +52,7 @@ const createMonthlyCsv = (fileName) => {
   if (!fs.existsSync(fileName)) {
     fs.writeFileSync(
       fileName,
-      "Sl No,Device Name,Downtime Started,Downtime Ended,Duration, Location, Reason\n"
+      "Sl No,Device Name,Downtime Started Date,Downtime Started Time,Downtime Ended Date,Downtime Ended Time,Duration, Location, Reason\n"
     );
   }
 };
@@ -125,11 +125,15 @@ const checkUpdateOnline = (device, time) => {
           writeCsv(monthFileName, [
             countCsvRows(monthFileName),
             d.title,
-            d.time,
-            currentDate.toLocaleString(),
+            new Date(d.time).toLocaleString("en-IN", {
+              timeZone: "Asia/Kolkata",
+            }),
+            currentDate.toLocaleString("en-IN", {
+              timeZone: "Asia/Kolkata",
+            }),
             formattedTimeDiff,
             d.description,
-            'Power Outage'
+            "Power Outage",
           ]);
         }
       }
