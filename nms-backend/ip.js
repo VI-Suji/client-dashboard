@@ -75,7 +75,7 @@ const checkDeviceStatus = (device) => {
     const timeNow = new Date().toLocaleString();
     // console.log(stdout);
 
-    if (!stdout.includes("100.0% packet loss")) {
+    if (!stdout.includes("unreachable.")) {
       checkUpdateOnline(device, new Date());
     } else {
       checkUpdateOffline(device, timeNow, data);
