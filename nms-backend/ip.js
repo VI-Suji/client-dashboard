@@ -1,6 +1,7 @@
 const fs = require("fs");
 const { exec } = require("child_process");
 const path = require("path");
+const pool = require('./db');
 
 const devices = [
   "192.168.1.247",
@@ -25,16 +26,17 @@ const devices = [
 
 const filePath = "data.json";
 
-const loadData = (filePath) => {
+const loadData = async () => {
   try {
-    const jsonData = fs.readFileSync(filePath, "utf8");
-    return JSON.parse(jsonData);
-  } catch (err) {
-    return [];
+    const { rows } = await pool.query('SELECT * FROM devices');
+    return rows;
+  } catch (error) {
+    console.error('Error fetching devices:', error);
+    throw error;
   }
 };
 
-const saveData = (filePath, data) => {
+const saveData = (data) => {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 4));
 };
 
@@ -57,102 +59,123 @@ const createMonthlyCsv = (fileName) => {
   }
 };
 
-const checkDeviceStatus = (device) => {
-  let found = false;
+const checkDeviceStatus = async (device) => {
+  // let found = false;
+  const data = await loadData();
+  // console.log(data.length);
 
-  for (const d of data) {
-    if (d.device_ip === device) {
-      found = true;
-      break;
-    }
-  }
+  // for (const d of data) {
+  //   if (d.device_ip === device) {
+  //     found = true;
+  //     break;
+  //   }
+  // }
 
-  if (!found) {
-    data.push({ device_ip: device, color: "green", time: "", state: "Online" });
-  }
+  // if (!found) {
+  //   await pool.query('INSERT INTO devices (device_ip, color, time, state) VALUES ($1, $2, $3, $4)', [device, "green", "", "Online"]);
+  // }
+
   exec(`ping -c 1 ${device}`, (error, stdout) => {
     const now = new Date().toLocaleString();
     const timeNow = new Date().toLocaleString();
-    // console.log(stdout);
+    // console.log(stdout,!stdout.includes("100% packet loss"));
+    // console.log(data);
 
-    if (!stdout.includes("unreachable.")) {
-      checkUpdateOnline(device, new Date());
+    if (!stdout.includes("100% packet loss")) {
+      checkUpdateOnline(device, new Date(), data);
     } else {
       checkUpdateOffline(device, timeNow, data);
     }
 
-    saveData(filePath, data);
+    saveData(data);
   });
 };
 
-const checkUpdateOffline = (device, timeNow, data) => {
-  for (const d of data) {
-    if (d.device_ip === device && d.color === "red") {
-      continue;
-    } else if (d.device_ip === device) {
-      d.color = "red";
-      d.time = timeNow;
-      d.state = "Offline";
-    }
-  }
-  return data;
-};
+const checkUpdateOffline = async (device, timeNow, data) => {
+  try {
+    const client = await pool.connect();
 
-const checkUpdateOnline = (device, time) => {
-  for (const d of data) {
-    if (d.device_ip === device) {
-      if (d.state === "Offline") {
-        const currentDate = new Date();
-        const timeDiff = currentDate - new Date(d.time);
-        const weeks = Math.floor(timeDiff / (1000 * 60 * 60 * 24 * 7));
-        const days = Math.floor(
-          (timeDiff % (1000 * 60 * 60 * 24 * 7)) / (1000 * 60 * 60 * 24)
-        );
-        const hours = Math.floor(
-          (timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-        const formattedTimeDiff = `${weeks} week(s) ${days} day(s) ${hours} hour(s) ${minutes} minute(s)`;
-        const monthFileName =
-          path.join(
-            "files",
-            currentDate.toLocaleString("default", { month: "long" })
-          ) + ".csv";
-        const shouldWriteCsv =
-          weeks > 0 || days > 0 || hours > 0 || minutes > 10;
-        createMonthlyCsv(monthFileName);
-        if (shouldWriteCsv == true) {
-          writeCsv(monthFileName, [
-            countCsvRows(monthFileName),
-            d.title,
-            d.time,
-            currentDate.toLocaleString(),
-            formattedTimeDiff,
-            d.description,
-            "Power Outage",
-          ]);
-        }
+    for (const d of data) {
+      if (d.device_ip === device && d.color === 'red') {
+        continue;
+      } else if (d.device_ip === device) {
+        await client.query('UPDATE devices SET color = $1, time = $2, state = $3 WHERE device_ip = $4', ['red', timeNow, 'Offline', device]);
+        d.color = 'red';
+        d.time = timeNow;
+        d.state = 'Offline';
       }
-      d.color = "green";
-      d.time = "";
-      d.state = "Online";
     }
+
+    client.release();
+
+    return data;
+  } catch (error) {
+    console.error('Error updating device status:', error);
+    throw error;
   }
-  return data;
 };
 
-let data;
+const checkUpdateOnline = async (device, time, data) => {
+  try {
+    // console.log("Data is",data.length);
+    for (const d of data) {
+      if (d.device_ip === device) {
+        if (d.state === 'Offline') {
+          const currentDate = new Date();
+          const timeDiff = currentDate - new Date(d.time);
 
-function ip_invoke() {
+          const hours = timeDiff / (1000 * 60 * 60);
+          const shouldWriteCsv = true;
+          
+          if (shouldWriteCsv) {
+            const formattedTimeDiff = `${hours}`;
+            const monthFileName = path.join(
+              'files',
+              currentDate.toLocaleString('default', { month: 'long' })
+            ) + '.csv';
+            
+            createMonthlyCsv(monthFileName);
+            writeCsv(monthFileName, [
+              countCsvRows(monthFileName),
+              d.title,
+              d.time,
+              currentDate.toLocaleString(),
+              formattedTimeDiff,
+              d.description,
+              'Power Outage',
+              d.id
+            ]);
+
+          const { rows } = await pool.query('SELECT COUNT(*) FROM status WHERE device_id = $1 AND downtime_started = $2',[d.id,d.time]);
+          console.log("A is ",rows[0].count)
+          if(rows[0].count==0){await pool.query('INSERT INTO status (device_name, downtime_started, downtime_ended, duration, location, reason, device_id) VALUES ($1, $2, $3, $4, $5, $6, $7)', [d.title, d.time, currentDate.toLocaleString(), formattedTimeDiff, d.description, 'Power Outage', d.id]);}
+          }
+          
+          const client = await pool.connect();
+          await client.query('UPDATE devices SET color = $1, time = $2, state = $3 WHERE device_ip = $4', ['green', '', 'Online', device]);
+          client.release();
+
+          d.color = 'green';
+          d.time = '';
+          d.state = 'Online';
+        }
+        break;
+      }
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('Error updating device status:', error);
+    throw error;
+  }
+};
+
+const ipInvoke = () => {
   setInterval(() => {
-    data = loadData(filePath);
     devices.forEach((device) => {
-      // console.log("device name is : ",device)
       checkDeviceStatus(device);
     });
   }, 10000);
-}
-
-module.exports = {
-  ipInvoke: ip_invoke,
 };
+
+module.exports = ipInvoke;
