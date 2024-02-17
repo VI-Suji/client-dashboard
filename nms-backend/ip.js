@@ -177,7 +177,7 @@ const checkUpdateOnline = async (device, time, data) => {
             ]);
 
           const { rows } = await pool.query('SELECT COUNT(*) FROM status WHERE device_id = $1 AND downtime_started = $2',[d.id,d.time]);
-          console.log("A is ",rows[0].count,d.time,timeString(d.time));
+          console.log("A is ",rows[0].count,d.time,timeString(d.time),timeString(currentDate.toLocaleString()));
           if(rows[0].count==0){await pool.query('INSERT INTO status (device_name, downtime_started, downtime_ended, duration, location, reason, device_id) VALUES ($1, $2, $3, $4, $5, $6, $7)', [d.title, d.time, timeString(currentDate.toLocaleString()), formattedTimeDiff, d.description, 'Power Outage', d.id]);}
           }
           
