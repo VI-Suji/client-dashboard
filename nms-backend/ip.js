@@ -152,6 +152,8 @@ const checkUpdateOnline = async (device, time, data) => {
       if (d.device_ip === device) {
         if (d.state === 'Offline') {
           const currentDate = new Date();
+          const formattedDate = `${currentDate.getFullYear()}/${String(currentDate.getMonth() + 1).padStart(2, '0')}/${String(currentDate.getDate()).padStart(2, '0')} ${String(currentDate.getHours()).padStart(2, '0')}:${String(currentDate.getMinutes()).padStart(2, '0')}:${String(currentDate.getSeconds()).padStart(2, '0')}`;
+
           const timeDiff = currentDate - new Date(d.time);
 
           const hours = timeDiff / (1000 * 60 * 60);
@@ -177,8 +179,8 @@ const checkUpdateOnline = async (device, time, data) => {
             ]);
 
           const { rows } = await pool.query('SELECT COUNT(*) FROM status WHERE device_id = $1 AND downtime_started = $2',[d.id,d.time]);
-          console.log("A is ",rows[0].count,d.time,timeString(d.time),timeString(currentDate.toLocaleString()));
-          if(rows[0].count==0){await pool.query('INSERT INTO status (device_name, downtime_started, downtime_ended, duration, location, reason, device_id) VALUES ($1, $2, $3, $4, $5, $6, $7)', [d.title, d.time, timeString(currentDate.toLocaleString()), formattedTimeDiff, d.description, 'Power Outage', d.id]);}
+          console.log("A is ",rows[0].count,d.time,timeString(d.time),timeString(formattedDate));
+          if(rows[0].count==0){await pool.query('INSERT INTO status (device_name, downtime_started, downtime_ended, duration, location, reason, device_id) VALUES ($1, $2, $3, $4, $5, $6, $7)', [d.title, d.time, timeString(formattedDate), formattedTimeDiff, d.description, 'Power Outage', d.id]);}
           }
           
           const client = await pool.connect();
