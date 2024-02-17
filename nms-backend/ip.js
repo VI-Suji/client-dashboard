@@ -40,6 +40,35 @@ const saveData = (data) => {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 4));
 };
 
+const timeString = (originalDateString) => {
+  var originalDate = new Date(originalDateString);
+
+  // Extract date components
+  var year = originalDate.getFullYear();
+  var month = originalDate.getMonth() + 1; // Months are zero-indexed
+  var day = originalDate.getDate();
+  var hours = originalDate.getHours();
+  var minutes = originalDate.getMinutes();
+  var seconds = originalDate.getSeconds();
+  
+  // Convert hours to 24-hour format if needed
+  if (originalDateString.includes('pm') && hours < 12) {
+      hours += 12;
+  }
+  
+  // Pad single-digit values with leading zeros
+  month = month < 10 ? '0' + month : month;
+  day = day < 10 ? '0' + day : day;
+  hours = hours < 10 ? '0' + hours : hours;
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+  seconds = seconds < 10 ? '0' + seconds : seconds;
+  
+  // Construct the formatted date string
+  var formattedDateString = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+  
+  return formattedDateString;
+};
+
 const countCsvRows = (fileName) => {
   const fileData = fs.readFileSync(fileName, "utf8");
   const rowCount = fileData.trim().split("\n").length;
@@ -99,9 +128,9 @@ const checkUpdateOffline = async (device, timeNow, data) => {
       if (d.device_ip === device && d.color === 'red') {
         continue;
       } else if (d.device_ip === device) {
-        await client.query('UPDATE devices SET color = $1, time = $2, state = $3 WHERE device_ip = $4', ['red', timeNow, 'Offline', device]);
+        await client.query('UPDATE devices SET color = $1, time = $2, state = $3 WHERE device_ip = $4', ['red', timeString(timeNow), 'Offline', device]);
         d.color = 'red';
-        d.time = timeNow;
+        d.time = timeString(timeNow);
         d.state = 'Offline';
       }
     }
@@ -146,9 +175,9 @@ const checkUpdateOnline = async (device, time, data) => {
               d.id
             ]);
 
-          const { rows } = await pool.query('SELECT COUNT(*) FROM status WHERE device_id = $1 AND downtime_started = $2',[d.id,d.time]);
+          const { rows } = await pool.query('SELECT COUNT(*) FROM status WHERE device_id = $1 AND downtime_started = $2',[d.id,timeString(d.time)]);
           console.log("A is ",rows[0].count)
-          if(rows[0].count==0){await pool.query('INSERT INTO status (device_name, downtime_started, downtime_ended, duration, location, reason, device_id) VALUES ($1, $2, $3, $4, $5, $6, $7)', [d.title, d.time, currentDate.toLocaleString(), formattedTimeDiff, d.description, 'Power Outage', d.id]);}
+          if(rows[0].count==0){await pool.query('INSERT INTO status (device_name, downtime_started, downtime_ended, duration, location, reason, device_id) VALUES ($1, $2, $3, $4, $5, $6, $7)', [d.title, timeString(d.time), timeString(currentDate.toLocaleString()), formattedTimeDiff, d.description, 'Power Outage', d.id]);}
           }
           
           const client = await pool.connect();
