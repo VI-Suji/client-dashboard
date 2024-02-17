@@ -58,7 +58,7 @@ app.get('/api/ddata', async (req, res) => {
     SELECT *, sum(duration) AS hours
     FROM status 
     WHERE ($1 = 'all' OR device_id = $1::integer)
-    AND TO_CHAR(downtime_started, 'YYYY-MM-DD HH24:MI:SS') LIKE $2
+    AND TO_CHAR(downtime_started, 'YYYY-MM-DD') LIKE $2
     GROUP BY status.id
 `;
 
@@ -160,3 +160,4 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 */
+
