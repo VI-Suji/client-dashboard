@@ -212,57 +212,104 @@ async function createTables() {
 ];
 
 const statusData = [
-    {
-      "Sl No": "1",
-      "device_name": "Vijayamangalam CCTV",
-      "downtime_started": "02/04/2024, 10:38:42 pm",
-      "downtime_ended": "02/09/2024, 9:17:14 am",
-      "duration": "106.63333333333334",
-      "location": "Vijayamangalam Highway",
-      "reason": "Power Outage",
-      "device_id": "1"
-    },
-    {
-      "Sl No": "2",
-      "device_name": "Kumarapalayam CCTV",
-      "downtime_started": "12/07/2023, 5:40:13 AM",
-      "downtime_ended": "02/08/2024, 8:06:10 PM",
-      "duration": "654.4166666666666",
-      "location": "Kumarapalayam",
-      "reason": "Power Outage",
-      "device_id": "4"
-    },
-    {
-      "Sl No": "3",
-      "device_name": "Vasavi College VMS",
-      "downtime_started": "12/05/2023, 11:52:18 PM",
-      "downtime_ended": "02/08/2024, 8:09:59 PM",
-      "duration": "1526",
-      "location": "Vasavi College",
-      "reason": "Power Outage",
-      "device_id": "18"
-    },
-    {
-      "Sl No": "4",
-      "device_name": "Chengapally VMS",
-      "downtime_started": "12/05/2023, 11:52:18 PM",
-      "downtime_ended": "02/08/2024, 8:09:59 PM",
-      "duration": "1526",
-      "location": "Chengapally",
-      "reason": "Power Outage",
-      "device_id": "15"
-    },
-    {
-      "Sl No": "5",
-      "device_name": "Vasavi College VMS",
-      "downtime_started": "12/05/2023, 11:52:18 PM",
-      "downtime_ended": "02/09/2024, 9:11:48 am",
-      "duration": "1569.31667",
-      "location": "Vasavi College",
-      "reason": "Power Outage",
-      "device_id": "18"
+  {
+    "Sl No": "1",
+    "device_name": "Vijayamangalam CCTV",
+    "downtime_started": "04/02/2024, 10:38:42 pm",
+    "downtime_ended": "09/02/2024, 9:17:14 am",
+    "duration": "106.63333333333334",
+    "location": "Vijayamangalam Highway",
+    "reason": "Power Outage",
+    "device_id": "1"
+  },
+  {
+    "Sl No": "2",
+    "device_name": "Kumarapalayam CCTV",
+    "downtime_started": "07/12/2023, 5:40:13 AM",
+    "downtime_ended": "08/02/2024, 8:06:10 PM",
+    "duration": "654.4166666666666",
+    "location": "Kumarapalayam",
+    "reason": "Power Outage",
+    "device_id": "4"
+  },
+  {
+    "Sl No": "3",
+    "device_name": "Vasavi College VMS",
+    "downtime_started": "05/02/2023, 11:52:18 PM",
+    "downtime_ended": "08/02/2024, 8:09:59 PM",
+    "duration": "1526",
+    "location": "Vasavi College",
+    "reason": "Power Outage",
+    "device_id": "18"
+  },
+  {
+    "Sl No": "4",
+    "device_name": "Chengapally VMS",
+    "downtime_started": "12/05/2023, 11:52:18 PM",
+    "downtime_ended": "08/02/2024, 8:09:59 PM",
+    "duration": "1526",
+    "location": "Chengapally",
+    "reason": "Power Outage",
+    "device_id": "15"
+  },
+  {
+    "Sl No": "5",
+    "device_name": "Vasavi College VMS",
+    "downtime_started": "05/12/2023, 11:52:18 PM",
+    "downtime_ended": "09/02/2024, 9:11:48 AM",
+    "duration": "1569.31667",
+    "location": "Vasavi College",
+    "reason": "Power Outage",
+    "device_id": "18"
+  }
+];
+
+const timeString = (originalDateString) => {
+    // Split the date string into date and time parts
+    var parts = originalDateString.split(", ");
+  
+    // Split the date part into day, month, year
+    var dateParts = parts[0].split("/");
+    var day = parseInt(dateParts[0]);
+    var month = parseInt(dateParts[1]);
+    var year = parseInt(dateParts[2]);
+  
+    // Split the time part into hours, minutes, seconds
+    var timeParts = parts[1].split(":");
+    var hours = parseInt(timeParts[0]);
+    var minutes = parseInt(timeParts[1]);
+    var seconds = parseInt(timeParts[2].split(" ")[0]); // Extract seconds and remove AM/PM
+  
+    // Adjust hours for AM/PM
+    if (parts[1].includes("PM") && hours < 12) {
+      hours += 12;
+    } else if (parts[1].includes("AM") && hours == 12) {
+      hours = 0;
     }
-  ];
+  
+    // Pad single-digit values with leading zeros
+    month = month < 10 ? "0" + month : month;
+    day = day < 10 ? "0" + day : day;
+    hours = hours < 10 ? "0" + hours : hours;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+  
+    // Construct the formatted date string
+    var formattedDateString =
+      year +
+      "-" +
+      month +
+      "-" +
+      day +
+      " " +
+      hours +
+      ":" +
+      minutes +
+      ":" +
+      seconds;
+      
+    return formattedDateString;
+  };
   
 
   
@@ -304,7 +351,7 @@ const statusData = [
           INSERT INTO status (device_name,downtime_started,downtime_ended,duration,location,reason, device_id)
           VALUES ($1, $2, $3, $4, $5, $6,$7)
         `;
-        const values = [device_name , downtime_started , downtime_ended , duration , location , reason, device_id];
+        const values = [device_name , timeString(downtime_started) , timeString(downtime_ended) , duration , location , reason, device_id];
         await client.query(query, values);
       }
   
