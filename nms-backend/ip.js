@@ -128,10 +128,12 @@ const checkUpdateOffline = async (device, timeNow, data) => {
       if (d.device_ip === device && d.color === 'red') {
         continue;
       } else if (d.device_ip === device) {
-        console.log('time for red is ',timeNow,timeString(timeNow));
-        await client.query('UPDATE devices SET color = $1, time = $2, state = $3 WHERE device_ip = $4', ['red', timeString(timeNow), 'Offline', device]);
+        const formattedDatetest = new Date(timeNow.replace(/(\d+)\/(\d+)\/(\d+),\s(\d+):(\d+):(\d+)\s(AM|PM)/, '$3-$2-$1 $4:$5:$6 $7')).toISOString().replace(/T|\.\d{3}Z/g, ' ');
+
+        console.log('time for red is ',timeNow,formattedDatetest);
+        await client.query('UPDATE devices SET color = $1, time = $2, state = $3 WHERE device_ip = $4', ['red', formattedDatetest, 'Offline', device]);
         d.color = 'red';
-        d.time = timeString(timeNow);
+        d.time = formattedDatetest;
         d.state = 'Offline';
       }
     }
