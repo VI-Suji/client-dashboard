@@ -128,6 +128,7 @@ const checkUpdateOffline = async (device, timeNow, data) => {
       if (d.device_ip === device && d.color === 'red') {
         continue;
       } else if (d.device_ip === device) {
+        console.log('time for red is ',timeNow,timeString(timeNow));
         await client.query('UPDATE devices SET color = $1, time = $2, state = $3 WHERE device_ip = $4', ['red', timeString(timeNow), 'Offline', device]);
         d.color = 'red';
         d.time = timeString(timeNow);
