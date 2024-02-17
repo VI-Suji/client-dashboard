@@ -1,7 +1,7 @@
 const fs = require("fs");
 const { exec } = require("child_process");
 const path = require("path");
-const pool = require('./db');
+const pool = require("./db");
 
 const devices = [
   "192.168.1.247",
@@ -28,16 +28,45 @@ const filePath = "data.json";
 
 const loadData = async () => {
   try {
-    const { rows } = await pool.query('SELECT * FROM devices');
+    const { rows } = await pool.query("SELECT * FROM devices");
     return rows;
   } catch (error) {
-    console.error('Error fetching devices:', error);
+    console.error("Error fetching devices:", error);
     throw error;
   }
 };
 
 const saveData = (data) => {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 4));
+};
+
+const formatTime = (test) => {
+  const [datePart, timePart] = test.split(", ");
+
+  // Split the date part into day, month, and year
+  const [day, month, year] = datePart.split("/").map(Number);
+
+  // Extract the time components
+  const [time, meridiem] = timePart.split(" ");
+  let [hours, minutes, seconds] = time.split(":").map(Number);
+
+  console.log(year, month, day);
+
+  // Adjust hours for PM if necessary
+  if (meridiem === "PM" && hours < 12) {
+    hours += 12;
+  }
+
+  // Format the date
+  const formattedDate = `${year.toString().padStart(2, "0")}-${month
+    .toString()
+    .padStart(2, "0")}-${day.toString().padStart(2, "0")} ${hours
+    .toString()
+    .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds
+    .toString()
+    .padStart(2, "0")}`;
+
+  return formattedDate;
 };
 
 const timeString = (originalDateString) => {
@@ -50,22 +79,33 @@ const timeString = (originalDateString) => {
   var hours = originalDate.getHours();
   var minutes = originalDate.getMinutes();
   var seconds = originalDate.getSeconds();
-  
+
   // Convert hours to 24-hour format if needed
-  if (originalDateString.includes('pm') && hours < 12) {
-      hours += 12;
+  if (originalDateString.includes("pm") && hours < 12) {
+    hours += 12;
   }
-  
+
   // Pad single-digit values with leading zeros
-  month = month < 10 ? '0' + month : month;
-  day = day < 10 ? '0' + day : day;
-  hours = hours < 10 ? '0' + hours : hours;
-  minutes = minutes < 10 ? '0' + minutes : minutes;
-  seconds = seconds < 10 ? '0' + seconds : seconds;
-  
+  month = month < 10 ? "0" + month : month;
+  day = day < 10 ? "0" + day : day;
+  hours = hours < 10 ? "0" + hours : hours;
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+  seconds = seconds < 10 ? "0" + seconds : seconds;
+
   // Construct the formatted date string
-  var formattedDateString = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
-  
+  var formattedDateString =
+    year +
+    "-" +
+    month +
+    "-" +
+    day +
+    " " +
+    hours +
+    ":" +
+    minutes +
+    ":" +
+    seconds;
+
   return formattedDateString;
 };
 
@@ -125,16 +165,19 @@ const checkUpdateOffline = async (device, timeNow, data) => {
     const client = await pool.connect();
 
     for (const d of data) {
-      if (d.device_ip === device && d.color === 'red') {
+      if (d.device_ip === device && d.color === "red") {
         continue;
       } else if (d.device_ip === device) {
-        const formattedDatetest = new Date(timeNow.replace(/(\d+)\/(\d+)\/(\d+),\s(\d+):(\d+):(\d+)\s(AM|PM)/, '$3-$2-$1 $4:$5:$6 $7')).toISOString().replace(/T|\.\d{3}Z/g, ' ');
+        const formattedDatetest = formatTime(timeNow);
 
-        console.log('time for red is ',timeNow,formattedDatetest);
-        await client.query('UPDATE devices SET color = $1, time = $2, state = $3 WHERE device_ip = $4', ['red', formattedDatetest, 'Offline', device]);
-        d.color = 'red';
+        console.log("time for red is ", timeNow, formattedDatetest);
+        await client.query(
+          "UPDATE devices SET color = $1, time = $2, state = $3 WHERE device_ip = $4",
+          ["red", formattedDatetest, "Offline", device]
+        );
+        d.color = "red";
         d.time = formattedDatetest;
-        d.state = 'Offline';
+        d.state = "Offline";
       }
     }
 
@@ -142,7 +185,7 @@ const checkUpdateOffline = async (device, timeNow, data) => {
 
     return data;
   } catch (error) {
-    console.error('Error updating device status:', error);
+    console.error("Error updating device status:", error);
     throw error;
   }
 };
@@ -152,22 +195,33 @@ const checkUpdateOnline = async (device, time, data) => {
     // console.log("Data is",data.length);
     for (const d of data) {
       if (d.device_ip === device) {
-        if (d.state === 'Offline') {
+        if (d.state === "Offline") {
           const currentDate = new Date();
-          const formattedDate = `${currentDate.getFullYear()}/${String(currentDate.getMonth() + 1).padStart(2, '0')}/${String(currentDate.getDate()).padStart(2, '0')} ${String(currentDate.getHours()).padStart(2, '0')}:${String(currentDate.getMinutes()).padStart(2, '0')}:${String(currentDate.getSeconds()).padStart(2, '0')}`;
+          const formattedDate = `${currentDate.getFullYear()}/${String(
+            currentDate.getMonth() + 1
+          ).padStart(2, "0")}/${String(currentDate.getDate()).padStart(
+            2,
+            "0"
+          )} ${String(currentDate.getHours()).padStart(2, "0")}:${String(
+            currentDate.getMinutes()
+          ).padStart(2, "0")}:${String(currentDate.getSeconds()).padStart(
+            2,
+            "0"
+          )}`;
 
           const timeDiff = currentDate - new Date(d.time);
 
           const hours = timeDiff / (1000 * 60 * 60);
           const shouldWriteCsv = true;
-          
+
           if (shouldWriteCsv) {
             const formattedTimeDiff = `${hours}`;
-            const monthFileName = path.join(
-              'files',
-              currentDate.toLocaleString('default', { month: 'long' })
-            ) + '.csv';
-            
+            const monthFileName =
+              path.join(
+                "files",
+                currentDate.toLocaleString("default", { month: "long" })
+              ) + ".csv";
+
             createMonthlyCsv(monthFileName);
             writeCsv(monthFileName, [
               countCsvRows(monthFileName),
@@ -176,30 +230,55 @@ const checkUpdateOnline = async (device, time, data) => {
               currentDate.toLocaleString(),
               formattedTimeDiff,
               d.description,
-              'Power Outage',
-              d.id
+              "Power Outage",
+              d.id,
             ]);
 
-          const { rows } = await pool.query('SELECT COUNT(*) FROM status WHERE device_id = $1 AND downtime_started = $2',[d.id,d.time]);
-          console.log("A is ",rows[0].count,d.time,timeString(d.time),timeString(formattedDate));
-          if(rows[0].count==0){await pool.query('INSERT INTO status (device_name, downtime_started, downtime_ended, duration, location, reason, device_id) VALUES ($1, $2, $3, $4, $5, $6, $7)', [d.title, d.time, timeString(formattedDate), formattedTimeDiff, d.description, 'Power Outage', d.id]);}
+            const { rows } = await pool.query(
+              "SELECT COUNT(*) FROM status WHERE device_id = $1 AND downtime_started = $2",
+              [d.id, d.time]
+            );
+            console.log(
+              "A is ",
+              rows[0].count,
+              d.time,
+              timeString(d.time),
+              timeString(formattedDate)
+            );
+            if (rows[0].count == 0) {
+              await pool.query(
+                "INSERT INTO status (device_name, downtime_started, downtime_ended, duration, location, reason, device_id) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+                [
+                  d.title,
+                  d.time,
+                  timeString(formattedDate),
+                  formattedTimeDiff,
+                  d.description,
+                  "Power Outage",
+                  d.id,
+                ]
+              );
+            }
           }
-          
+
           const client = await pool.connect();
-          await client.query('UPDATE devices SET color = $1, time = $2, state = $3 WHERE device_ip = $4', ['green', '', 'Online', device]);
+          await client.query(
+            "UPDATE devices SET color = $1, time = $2, state = $3 WHERE device_ip = $4",
+            ["green", "", "Online", device]
+          );
           client.release();
 
-          d.color = 'green';
-          d.time = '';
-          d.state = 'Online';
+          d.color = "green";
+          d.time = "";
+          d.state = "Online";
         }
         break;
       }
     }
-    
+
     return data;
   } catch (error) {
-    console.error('Error updating device status:', error);
+    console.error("Error updating device status:", error);
     throw error;
   }
 };
