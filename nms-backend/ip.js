@@ -41,31 +41,49 @@ const saveData = (data) => {
 };
 
 const timeString = (originalDateString) => {
-  var originalDate = new Date(originalDateString);
+  // Split the date string into date and time parts
+  var parts = originalDateString.split(", ");
 
-  // Extract date components
-  var year = originalDate.getFullYear();
-  var month = originalDate.getMonth() + 1; // Months are zero-indexed
-  var day = originalDate.getDate();
-  var hours = originalDate.getHours();
-  var minutes = originalDate.getMinutes();
-  var seconds = originalDate.getSeconds();
-  
-  // Convert hours to 24-hour format if needed
-  if (originalDateString.includes('pm') && hours < 12) {
-      hours += 12;
+  // Split the date part into day, month, year
+  var dateParts = parts[0].split("/");
+  var day = parseInt(dateParts[0]);
+  var month = parseInt(dateParts[1]);
+  var year = parseInt(dateParts[2]);
+
+  // Split the time part into hours, minutes, seconds
+  var timeParts = parts[1].split(":");
+  var hours = parseInt(timeParts[0]);
+  var minutes = parseInt(timeParts[1]);
+  var seconds = parseInt(timeParts[2].split(" ")[0]); // Extract seconds and remove AM/PM
+
+  // Adjust hours for AM/PM
+  if (parts[1].includes("PM") && hours < 12) {
+    hours += 12;
+  } else if (parts[1].includes("AM") && hours == 12) {
+    hours = 0;
   }
-  
+
   // Pad single-digit values with leading zeros
-  month = month < 10 ? '0' + month : month;
-  day = day < 10 ? '0' + day : day;
-  hours = hours < 10 ? '0' + hours : hours;
-  minutes = minutes < 10 ? '0' + minutes : minutes;
-  seconds = seconds < 10 ? '0' + seconds : seconds;
-  
+  month = month < 10 ? "0" + month : month;
+  day = day < 10 ? "0" + day : day;
+  hours = hours < 10 ? "0" + hours : hours;
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+  seconds = seconds < 10 ? "0" + seconds : seconds;
+
   // Construct the formatted date string
-  var formattedDateString = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
-  
+  var formattedDateString =
+    year +
+    "-" +
+    month +
+    "-" +
+    day +
+    " " +
+    hours +
+    ":" +
+    minutes +
+    ":" +
+    seconds;
+    
   return formattedDateString;
 };
 
