@@ -81,9 +81,9 @@ const timeString = (originalDateString) => {
   var seconds = originalDate.getSeconds();
 
   // Convert hours to 24-hour format if needed
-  if (originalDateString.includes("pm") && hours < 12) {
-    hours += 12;
-  }
+  // if (originalDateString.includes("pm") && hours < 12) {
+  //   hours += 12;
+  // }
 
   // Pad single-digit values with leading zeros
   month = month < 10 ? "0" + month : month;
