@@ -208,19 +208,20 @@ const checkUpdateOnline = async (device, time, data) => {
             2,
             "0"
           )}`;
-          const formatteddDate = `${d.time.getFullYear()}/${String(
-            d.time.getMonth() + 1
-          ).padStart(2, "0")}/${String(d.time.getDate()).padStart(
+          const timeStarted = new Date(d.time);
+          const formatteddDate = `${timeStarted.getFullYear()}/${String(
+            timeStarted.getMonth() + 1
+          ).padStart(2, "0")}/${String(timeStarted.getDate()).padStart(
             2,
             "0"
-          )} ${String(d.time.getHours()).padStart(2, "0")}:${String(
-            d.time.getMinutes()
-          ).padStart(2, "0")}:${String(d.time.getSeconds()).padStart(
+          )} ${String(timeStarted.getHours()).padStart(2, "0")}:${String(
+            timeStarted.getMinutes()
+          ).padStart(2, "0")}:${String(timeStarted.getSeconds()).padStart(
             2,
             "0"
           )}`;
 
-          const timeDiff = currentDate - d.time;
+          const timeDiff = currentDate - timeStarted;
 
           const hours = timeDiff / (1000 * 60 * 60);
           const shouldWriteCsv = true;
@@ -237,7 +238,7 @@ const checkUpdateOnline = async (device, time, data) => {
             writeCsv(monthFileName, [
               countCsvRows(monthFileName),
               d.title,
-              d.time,
+              timeStarted,
               currentDate.toLocaleString(),
               formattedTimeDiff,
               d.description,
@@ -247,12 +248,12 @@ const checkUpdateOnline = async (device, time, data) => {
 
             const { rows } = await pool.query(
               "SELECT COUNT(*) FROM status WHERE device_id = $1 AND downtime_started = $2",
-              [d.id, timeString(d.time)]
+              [d.id, timeString(formatteddDate)]
             );
             console.log(
               "A is ",
               rows[0].count,
-              d.time,
+              timeStarted,
               timeString(d.time),
               timeString(formattedDate)
             );
@@ -261,7 +262,7 @@ const checkUpdateOnline = async (device, time, data) => {
                 "INSERT INTO status (device_name, downtime_started, downtime_ended, duration, location, reason, device_id) VALUES ($1, $2, $3, $4, $5, $6, $7)",
                 [
                   d.title,
-                  timeString(d.time),
+                  timeString(timeStarted),
                   timeString(formattedDate),
                   formattedTimeDiff,
                   d.description,
