@@ -146,7 +146,7 @@ const checkDeviceStatus = async (device) => {
 
   exec(`ping -c 1 ${device}`, (error, stdout) => {
     const now = new Date().toLocaleString();
-    const timeNow = new Date().toLocaleString();
+    const timeNow = new Date();
     // console.log(stdout,!stdout.includes("100% packet loss"));
     // console.log(data);
 
@@ -168,15 +168,15 @@ const checkUpdateOffline = async (device, timeNow, data) => {
       if (d.device_ip === device && d.color === "red") {
         continue;
       } else if (d.device_ip === device) {
-        const formattedDatetest = formatTime(timeNow);
+        // const formattedDatetest = formatTime(timeNow);
 
-        console.log("time for red is ", timeNow, formattedDatetest);
+        console.log("time for red is ", timeNow);
         await client.query(
           "UPDATE devices SET color = $1, time = $2, state = $3 WHERE device_ip = $4",
-          ["red", formattedDatetest, "Offline", device]
+          ["red", timeNow, "Offline", device]
         );
         d.color = "red";
-        d.time = formattedDatetest;
+        d.time = timeNow;
         d.state = "Offline";
       }
     }
@@ -208,8 +208,19 @@ const checkUpdateOnline = async (device, time, data) => {
             2,
             "0"
           )}`;
+          const formatteddDate = `${d.time.getFullYear()}/${String(
+            d.time.getMonth() + 1
+          ).padStart(2, "0")}/${String(d.time.getDate()).padStart(
+            2,
+            "0"
+          )} ${String(d.time.getHours()).padStart(2, "0")}:${String(
+            d.time.getMinutes()
+          ).padStart(2, "0")}:${String(d.time.getSeconds()).padStart(
+            2,
+            "0"
+          )}`;
 
-          const timeDiff = currentDate - new Date(d.time);
+          const timeDiff = currentDate - d.time;
 
           const hours = timeDiff / (1000 * 60 * 60);
           const shouldWriteCsv = true;
@@ -236,7 +247,7 @@ const checkUpdateOnline = async (device, time, data) => {
 
             const { rows } = await pool.query(
               "SELECT COUNT(*) FROM status WHERE device_id = $1 AND downtime_started = $2",
-              [d.id, d.time]
+              [d.id, timeString(d.time)]
             );
             console.log(
               "A is ",
@@ -250,7 +261,7 @@ const checkUpdateOnline = async (device, time, data) => {
                 "INSERT INTO status (device_name, downtime_started, downtime_ended, duration, location, reason, device_id) VALUES ($1, $2, $3, $4, $5, $6, $7)",
                 [
                   d.title,
-                  d.time,
+                  timeString(d.time),
                   timeString(formattedDate),
                   formattedTimeDiff,
                   d.description,
