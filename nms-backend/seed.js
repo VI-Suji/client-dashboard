@@ -381,4 +381,4 @@ const timeString = (originalDateString) => {
 
 seedStatusTable();
 
-INSERT INTO devices (device_ip, title, description, image_url, color, state, time) VALUES ('192.168.1.241', 'MET', 'Meterology Device', '/customers/images/vms.png', 'green', 'Online', '');
+// INSERT INTO devices (device_ip, title, description, image_url, color, state, time) VALUES ('192.168.1.241', 'MET', 'Meterology Device', '/customers/images/vms.png', 'green', 'Online', '');
