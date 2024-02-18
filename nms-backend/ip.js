@@ -224,9 +224,9 @@ const checkUpdateOnline = async (device, time, data) => {
           const timeDiff = currentDate - timeStarted;
 
           const hours = timeDiff / (1000 * 60 * 60);
-          const shouldWriteCsv = true;
+          // const shouldWriteCsv = true;
 
-          if (shouldWriteCsv) {
+          if (hours>0.15) {
             const formattedTimeDiff = `${hours}`;
             const monthFileName =
               path.join(
