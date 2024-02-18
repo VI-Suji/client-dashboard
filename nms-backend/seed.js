@@ -208,7 +208,16 @@ async function createTables() {
         "color": "green",
         "state": "Online",
         "time": ""
-    }
+    },
+    {
+      "device_ip": "192.168.1.241",
+      "title": "MET",
+      "description": "Meteorology Device",
+      "imageUrl": "/customers/images/vms.png",
+      "color": "green",
+      "state": "Online",
+      "time": ""
+  }
 ];
 
 const statusData = [
@@ -371,3 +380,5 @@ const timeString = (originalDateString) => {
 //   seedDevicesTable();
 
 seedStatusTable();
+
+INSERT INTO devices (device_ip, title, description, image_url, color, state, time) VALUES ('192.168.1.241', 'MET', 'Meterology Device', '/customers/images/vms.png', 'green', 'Online', '');
