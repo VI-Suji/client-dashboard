@@ -6,8 +6,10 @@ const fs = require('fs');
 const ip = require('./ip')
 const pool = require('./db')
 const pdf = require('./pdf')
+const schedule = require('./schedule')
 
 ip() // Main function for IP Invoke
+schedule() //Main function for Schedule job
 
 const app = express();
 const PORT = process.env.PORT || 3001
@@ -45,9 +47,24 @@ app.post('/api/downloadFile', (req, res) => {
 //   res.json(data);
 // });
 
-app.get('/api/percentage', (req, res) => {
+app.get('/api/data_where',async (req, res) => {
+  const { query } = req.query;
+  const table = query || 'devices'; // Default to 'devices' if no query parameter is provided
 
-})
+  try {
+    // Construct the SQL query string dynamically
+    const sqlQuery = `SELECT * FROM ${table} WHERE color='red'`;
+
+    // Query the database
+    const { rows } = await pool.query(sqlQuery);
+
+    // Return the query results as a JSON response
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 app.get('/api/ddata', async (req, res) => {
   let { id, start, end } = req.query;
