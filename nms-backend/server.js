@@ -51,32 +51,26 @@ app.get('/api/percentage', (req, res) => {
 
 app.get('/api/ddata', async (req, res) => {
   let { id, start, end } = req.query;
-  console.log(id, start, end);
+  const startDate = new Date(start);
+const endDate = new Date(end);
+  const formattedStart = startDate.toISOString(); // Convert to ISO 8601 string
+const formattedEnd = endDate.toISOString();     // Convert to ISO 8601 string
 
-  try {
-    const sqlQuery_month = `
-    SELECT *, sum(duration) AS hours
-    FROM status 
-    WHERE ($1 = 'all' OR device_id = $1::integer)
-    AND TO_CHAR(downtime_started, 'YYYY-MM-DD') LIKE $2
-    GROUP BY status.id
-`;
+console.log(id, formattedStart, formattedEnd);
 
-const sqlquery = `
-    SELECT *, sum(duration) AS hours
+try {
+  const sqlquery = `
+    SELECT *
     FROM status 
     WHERE ($1 = 'all' OR device_id = $1::integer) 
-    AND TO_CHAR(downtime_started, 'YYYY-DD-MM') BETWEEN $2 AND $3
+    AND downtime_started < $3::timestamptz 
+    AND downtime_ended > $2::timestamptz
     GROUP BY status.id
-`;
+  `;
 
-    // Query the database
-    let rows;
-    if(start != end ){
-      ({ rows } = await pool.query(sqlquery, [`${id}`, `${start}`, `${end}`]));
-    }else{
-      ({ rows } = await pool.query(sqlQuery_month, [`${id}`, `%${start}%`]));
-    }
+  // Query the database
+  const { rows } = await pool.query(sqlquery, [id, formattedStart, formattedEnd]);
+    console.log("rows is ",rows);
 
     res.status(200).json(rows);
     // Return the query results as a JSON response
